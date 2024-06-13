@@ -1,0 +1,82 @@
+import java.util.*;
+import java.util.LinkedList;
+class Node {
+    int data;
+    Node left, right;
+    Node(int data) {
+        this.data = data;
+    }
+}
+class QueueItem {
+    Node node;
+    int hd;
+    QueueItem(Node node, int hd) {
+        this.node = node;
+        this.hd = hd;
+    }
+}
+class Tree {
+    void verticalView(Node root) {
+        if (root == null) {
+            return;
+        }
+        Queue<QueueItem> queue = new LinkedList<>();
+        TreeMap<Integer,ArrayList<Integer>> map = new TreeMap<>();
+        queue.add(new QueueItem(root, 0));
+
+        while (!queue.isEmpty()) {
+            QueueItem temp = queue.poll();
+            Node node = temp.node; // node value (nodes)
+            int hd = temp.hd;      // horizontal distance
+              map.putIfAbsent(hd,new ArrayList<>());
+              map.get(hd).add(node.data);
+            // level order traversal
+            if (node.left != null) {
+                queue.add(new QueueItem(node.left, hd - 1));
+            }
+            if (node.right != null) {
+                queue.add(new QueueItem(node.right, hd + 1));
+            }
+        }
+
+        for (Map.Entry<Integer,ArrayList<Integer>> entry : map.entrySet()) {
+            System.out.print(entry.getValue() + " ");
+        }
+        System.out.println();
+    }
+    void levelNodes(Node root,int level){
+           if(level==0){
+           System.out.println(root.data+"");
+           }
+           else{
+           levelNodes(root.left,level-1);
+           levelNodes(root.right,level-1);
+    }
+    }
+    static Node addNode(Node root, int value) {
+        if (root == null) {
+            return new Node(value);
+        }
+        if (value < root.data) {
+            root.left = addNode(root.left, value);
+        } else if (value > root.data) {
+            root.right = addNode(root.right, value);
+        }
+        return root;
+    }
+}
+
+public class leveltraverse{
+    public static void main(String[] args) {
+        Tree tree = new Tree();
+        
+        Node root = null;
+        int[] arr = {3, 2, 5, 1, 4, 7};
+        for (int i : arr) {
+            root = Tree.addNode(root, i);
+        }
+
+        tree.verticalView(root);
+        tree.levelNodes(root,1);
+    }
+}
